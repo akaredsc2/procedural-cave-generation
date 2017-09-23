@@ -247,6 +247,8 @@ GameObject:
   - component: {fileID: 1466201896}
   - component: {fileID: 1466201895}
   - component: {fileID: 1466201897}
+  - component: {fileID: 1466201899}
+  - component: {fileID: 1466201898}
   m_Layer: 0
   m_Name: map-generator
   m_TagString: Untagged
@@ -266,13 +268,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   proceduralCaveGenerationAbstractFactory: {fileID: 330854240}
-  width: 10
-  height: 10
+  width: 30
+  height: 40
   seed: Vitalii
-  useRandomSeed: 0
+  useRandomSeed: 1
   randomFillPercent: 45
-  smoothingIterationCount: 0
-  squareSize: 0
+  smoothingIterationCount: 3
+  squareSize: 1
 --- !u!4 &1466201896
 Transform:
   m_ObjectHideFlags: 0
@@ -299,3 +301,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   proceduralCaveGenerationAbstractFactory: {fileID: 330854240}
+--- !u!23 &1466201898
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1466201894}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: b4febc3439c5b6e4490f6930695bc16e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!33 &1466201899
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1466201894}
+  m_Mesh: {fileID: 0}

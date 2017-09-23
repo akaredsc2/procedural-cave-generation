@@ -5,7 +5,7 @@ namespace DataStructures
     public class Node
     {
         private readonly Vector3 position;
-        private readonly int vertexIndex = -1;
+        private int vertexIndex = -1;
 
         public Node(Vector3 position)
         {
@@ -20,6 +20,8 @@ namespace DataStructures
         public int VertexIndex
         {
             get { return vertexIndex; }
+            //todo refactor to create new point with correct vertex index
+            set { vertexIndex = value; }
         }
     }
 }
