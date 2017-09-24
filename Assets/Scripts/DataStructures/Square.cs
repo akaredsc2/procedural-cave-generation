@@ -12,31 +12,22 @@
         private readonly Node centerBottom;
         private readonly Node centerLeft;
 
-        private int configuration;
+        private readonly int configuration;
 
-        // todo move to factory
-        public Square(ControlNode topLeft, ControlNode topRight, ControlNode bottomRight, ControlNode bottomLeft)
+        public Square(ControlNode topLeft, ControlNode topRight, ControlNode bottomRight, ControlNode bottomLeft,
+            Node centerTop, Node centerRight, Node centerBottom, Node centerLeft, int configuration)
         {
             this.topLeft = topLeft;
             this.topRight = topRight;
             this.bottomRight = bottomRight;
             this.bottomLeft = bottomLeft;
-
-            centerTop = topLeft.Right;
-            centerRight = bottomRight.Above;
-            centerBottom = bottomLeft.Right;
-            centerLeft = bottomLeft.Above;
-
-            if (topLeft.IsActive)
-                configuration += 8;
-            if (topRight.IsActive)
-                configuration += 4;
-            if (bottomRight.IsActive)
-                configuration += 2;
-            if (bottomLeft.IsActive)
-                configuration += 1;
+            this.centerTop = centerTop;
+            this.centerRight = centerRight;
+            this.centerBottom = centerBottom;
+            this.centerLeft = centerLeft;
+            this.configuration = configuration;
         }
-
+        
         public ControlNode TopLeft
         {
             get { return topLeft; }

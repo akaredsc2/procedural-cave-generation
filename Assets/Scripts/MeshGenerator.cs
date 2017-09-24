@@ -24,7 +24,7 @@ public class MeshGenerator : MonoBehaviour
 
         vertices = new List<Vector3>();
         triangleIndecies = new List<int>();
-        
+
         for (int i = 0; i < squareGrid.Squares.GetLength(0); i++)
         {
             for (int j = 0; j < squareGrid.Squares.GetLength(1); j++)
@@ -32,12 +32,13 @@ public class MeshGenerator : MonoBehaviour
                 TriangulateSquare(squareGrid.Squares[i, j]);
             }
         }
-        
+
         Mesh mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh = mesh;
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangleIndecies.ToArray();
         mesh.RecalculateNormals();
+
+        GetComponent<MeshFilter>().mesh = mesh;
     }
 
     void TriangulateSquare(Square square)
@@ -128,8 +129,7 @@ public class MeshGenerator : MonoBehaviour
         {
             if (points[i].VertexIndex == -1)
             {
-                //todo refactor to create new point with correct vertex index
-                points[i].VertexIndex = vertices.Count;
+                points[i] = points[i].CopyWithVertexIndex(vertices.Count);
                 vertices.Add(points[i].Position);
             }
         }

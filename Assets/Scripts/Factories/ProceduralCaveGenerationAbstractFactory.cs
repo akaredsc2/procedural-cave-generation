@@ -4,9 +4,18 @@ namespace Factories
 {
     public class ProceduralCaveGenerationAbstractFactory : MonoBehaviour
     {
-        private readonly SquareGridFactory squareGridFactory = new SquareGridFactory();
-        private readonly MapFactory mapFactory = new MapFactory();
-        private readonly MapPropertiesFactory mapPropertiesFactory = new MapPropertiesFactory();
+        private readonly SquareFactory squareFactory;
+        private readonly SquareGridFactory squareGridFactory;
+        private readonly MapFactory mapFactory;
+        private readonly MapPropertiesFactory mapPropertiesFactory;
+
+        public ProceduralCaveGenerationAbstractFactory()
+        {
+            squareFactory = new SquareFactory();
+            squareGridFactory = new SquareGridFactory(squareFactory);
+            mapFactory = new MapFactory();
+            mapPropertiesFactory = new MapPropertiesFactory();
+        }
 
         public SquareGridFactory SquareGridFactory
         {
@@ -21,6 +30,11 @@ namespace Factories
         public MapPropertiesFactory MapPropertiesFactory
         {
             get { return mapPropertiesFactory; }
+        }
+
+        public SquareFactory SquareFactory
+        {
+            get { return squareFactory; }
         }
     }
 }

@@ -5,6 +5,13 @@ namespace Factories
 {
     public class SquareGridFactory
     {
+        private readonly SquareFactory squareFactory;
+
+        public SquareGridFactory(SquareFactory squareFactory)
+        {
+            this.squareFactory = squareFactory;
+        }
+
         public SquareGrid CreateSqaureGrid(int[,] map, float squareSize)
         {
             ControlNode[,] controlNodes = CreateControlNodes(map, squareSize);
@@ -45,11 +52,8 @@ namespace Factories
             {
                 for (int j = 0; j < result.GetLength(1); j++)
                 {
-                    result[i, j] = new Square(
-                        controlNodes[i, j + 1],
-                        controlNodes[i + 1, j + 1],
-                        controlNodes[i + 1, j],
-                        controlNodes[i, j]);
+                    result[i, j] = squareFactory.CreateSquare(controlNodes[i, j + 1], controlNodes[i + 1, j + 1],
+                        controlNodes[i + 1, j], controlNodes[i, j]);
                 }
             }
 

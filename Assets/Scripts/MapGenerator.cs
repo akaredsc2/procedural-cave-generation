@@ -25,14 +25,6 @@ public class MapGenerator : MonoBehaviour
     {
         mapFactory = proceduralCaveGenerationAbstractFactory.MapFactory;
         mapPropertiesFactory = proceduralCaveGenerationAbstractFactory.MapPropertiesFactory;
-
-        MapProperties mapProperties = mapPropertiesFactory.createMapProperties(width, height, seed, useRandomSeed,
-            randomFillPercent, smoothingIterationCount, squareSize);
-        
-        map = mapFactory.CreateMap(mapProperties);
-
-        MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
-        meshGenerator.GenerateMesh(map, 1);
     }
 
     private void Update()

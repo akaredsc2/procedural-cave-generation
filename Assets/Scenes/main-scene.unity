@@ -268,11 +268,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   proceduralCaveGenerationAbstractFactory: {fileID: 330854240}
-  width: 30
-  height: 40
+  width: 90
+  height: 120
   seed: Vitalii
   useRandomSeed: 1
-  randomFillPercent: 45
+  randomFillPercent: 47
   smoothingIterationCount: 3
   squareSize: 1
 --- !u!4 &1466201896
