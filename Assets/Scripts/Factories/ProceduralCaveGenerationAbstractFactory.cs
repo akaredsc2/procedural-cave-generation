@@ -8,6 +8,7 @@ namespace Factories
         private readonly SquareGridFactory squareGridFactory;
         private readonly MapFactory mapFactory;
         private readonly MapPropertiesFactory mapPropertiesFactory;
+        private readonly MeshFactory meshFactory;
 
         public ProceduralCaveGenerationAbstractFactory()
         {
@@ -15,6 +16,7 @@ namespace Factories
             squareGridFactory = new SquareGridFactory(squareFactory);
             mapFactory = new MapFactory();
             mapPropertiesFactory = new MapPropertiesFactory();
+            meshFactory = new MeshFactory();
         }
 
         public SquareGridFactory SquareGridFactory
@@ -35,6 +37,11 @@ namespace Factories
         public SquareFactory SquareFactory
         {
             get { return squareFactory; }
+        }
+
+        public MeshFactory MeshFactory
+        {
+            get { return meshFactory; }
         }
     }
 }
