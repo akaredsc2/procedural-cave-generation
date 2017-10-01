@@ -6,9 +6,11 @@ public class MeshGenerator : MonoBehaviour
 {
     public ProceduralCaveGenerationAbstractFactory proceduralCaveGenerationAbstractFactory;
 
+    public MeshFilter wallsMeshFilter;
+
     private SquareGridFactory squareGridFactory;
     private MeshFactory meshFactory;
-    
+
     private void Start()
     {
         squareGridFactory = proceduralCaveGenerationAbstractFactory.SquareGridFactory;
@@ -18,6 +20,6 @@ public class MeshGenerator : MonoBehaviour
     public void GenerateMesh(int[,] map, float squareSize)
     {
         SquareGrid squareGrid = squareGridFactory.CreateSqaureGrid(map, squareSize);
-        GetComponent<MeshFilter>().mesh = meshFactory.CreateMesh(squareGrid);
+        GetComponent<MeshFilter>().mesh = meshFactory.CreateMesh(squareGrid, wallsMeshFilter);
     }
 }

@@ -17,6 +17,8 @@ public class MapGenerator : MonoBehaviour
     public int smoothingIterationCount;
     public float squareSize;
 
+    public int borderSize;
+
     private MapFactory mapFactory;
     private MapPropertiesFactory mapPropertiesFactory;
     private int[,] map;
@@ -33,27 +35,29 @@ public class MapGenerator : MonoBehaviour
         {
             MapProperties mapProperties = mapPropertiesFactory.createMapProperties(width, height, seed, useRandomSeed,
                 randomFillPercent, smoothingIterationCount, squareSize);
-            
-            map = mapFactory.CreateMap(mapProperties);
-            
-            MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
-            meshGenerator.GenerateMesh(map, 1);
-        }
-    }
 
-    private void OnDrawGizmos()
-    {
-        if (map != null)
-        {
-            for (int i = 0; i < width; i++)
+            map = mapFactory.CreateMap(mapProperties);
+
+            // todo move to map factory
+            int[,] borderedMap = new int[width + borderSize * 2, height + borderSize * 2];
+
+            for (int i = 0; i < borderedMap.GetLength(0); i++)
             {
-                for (int j = 0; j < height; j++)
+                for (int j = 0; j < borderedMap.GetLength(1); j++)
                 {
-                    Gizmos.color = map[i, j] == 1 ? Color.black : Color.white;
-                    Vector3 position = new Vector3(-width / 2 + i + 0.5f, 0, -height / 2 + j + 0.5f);
-                    Gizmos.DrawCube(position, Vector3.one);
+                    if (i >= borderSize && i < width + borderSize && j >= borderSize && j < height + borderSize)
+                    {
+                        borderedMap[i, j] = map[i - borderSize, j - borderSize];
+                    }
+                    else
+                    {
+                        borderedMap[i, j] = 1;
+                    }
                 }
             }
+
+            MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
+            meshGenerator.GenerateMesh(borderedMap, 1);
         }
     }
 }
