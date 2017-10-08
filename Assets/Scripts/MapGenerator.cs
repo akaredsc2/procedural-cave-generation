@@ -24,6 +24,8 @@ public class MapGenerator : MonoBehaviour
     public int wallThreshold = 50;
     public int roomThreshold = 50;
 
+    public int passagewayRadius = 1;
+
     private MapFactory mapFactory;
     private MapPropertiesFactory mapPropertiesFactory;
     private int[,] map;
@@ -106,7 +108,7 @@ public class MapGenerator : MonoBehaviour
         survivingRooms.Sort();
         survivingRooms[0].isMainRoom = true;
         survivingRooms[0].isAccessibleFromMainRoom = true;
-        
+
         ConnectClosesRooms(survivingRooms);
     }
 
@@ -134,14 +136,14 @@ public class MapGenerator : MonoBehaviour
             roomListA = allRooms;
             roomListB = allRooms;
         }
-        
+
         int bestDistance = 0;
         Coord bestTileA = new Coord();
         Coord bestTileB = new Coord();
         Room bestRoomA = new Room();
         Room bestRoomB = new Room();
         bool possibleConnectionFound = false;
-        
+
         foreach (Room roomA in roomListA)
         {
             if (!forceAccessiblityFromMainRoom)
@@ -158,7 +160,7 @@ public class MapGenerator : MonoBehaviour
                 {
                     continue;
                 }
-                
+
                 for (int tileIndexA = 0; tileIndexA < roomA.EdgeTiles.Count; tileIndexA++)
                 {
                     for (int tileIndexB = 0; tileIndexB < roomB.EdgeTiles.Count; tileIndexB++)
@@ -192,7 +194,7 @@ public class MapGenerator : MonoBehaviour
             CreatePassage(bestRoomA, bestRoomB, bestTileA, bestTileB);
             ConnectClosesRooms(allRooms, true);
         }
-        
+
         if (!forceAccessiblityFromMainRoom)
         {
             ConnectClosesRooms(allRooms, true);
@@ -203,11 +205,95 @@ public class MapGenerator : MonoBehaviour
     {
         Room.ConnectRooms(roomA, roomB);
         Debug.DrawLine(CoordToWorldPoint(tileA), CoordToWorldPoint(tileB), Color.green, 100);
+
+        List<Coord> line = GetLine(tileA, tileB);
+        foreach (Coord coord in line)
+        {
+            DrawCircle(coord, passagewayRadius);
+        }
+    }
+
+    void DrawCircle(Coord coord, int radius)
+    {
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                if (x * x + y * y <= radius * radius)
+                {
+                    int drawX = coord.TileX + x;
+                    int drawY = coord.TileY + y;
+                    if (IsInMapRange(drawX, drawY, width, height))
+                    {
+                        map[drawX, drawY] = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    List<Coord> GetLine(Coord from, Coord to)
+    {
+        List<Coord> line = new List<Coord>();
+
+        int x = from.TileX;
+        int y = from.TileY;
+
+        int dx = to.TileX - from.TileX;
+        int dy = to.TileY - from.TileY;
+
+        bool inverted = false;
+        int step = Math.Sign(dx);
+        int gradientStep = Math.Sign(dy);
+
+        int longest = Mathf.Abs(dx);
+        int shortest = Mathf.Abs(dy);
+
+        if (longest < shortest)
+        {
+            inverted = true;
+            longest = Mathf.Abs(dy);
+            shortest = Mathf.Abs(dx);
+
+            step = Math.Sign(dy);
+            gradientStep = Math.Sign(dx);
+        }
+
+        int gradientAccumulation = longest / 2;
+        for (int i = 0; i < longest; i++)
+        {
+            line.Add(new Coord(x, y));
+
+            if (inverted)
+            {
+                y += step;
+            }
+            else
+            {
+                x += step;
+            }
+
+            gradientAccumulation += shortest;
+            if (gradientAccumulation >= longest)
+            {
+                if (inverted)
+                {
+                    x += gradientStep;
+                }
+                else
+                {
+                    y += gradientStep;
+                }
+                gradientAccumulation -= longest;
+            }
+        }
+
+        return line;
     }
 
     Vector3 CoordToWorldPoint(Coord tile)
     {
-         return  new Vector3(-width / 2 + 0.5f + tile.TileX, 2, -height / 2 + 0.5f + tile.TileY);
+        return new Vector3(-width / 2 + 0.5f + tile.TileX, 2, -height / 2 + 0.5f + tile.TileY);
     }
 
     private List<List<Coord>> GetRegions(int tileType, int[,] map)
@@ -306,7 +392,7 @@ public class MapGenerator : MonoBehaviour
         private readonly int roomSize;
         public bool isAccessibleFromMainRoom;
         public bool isMainRoom;
-        
+
         public Room()
         {
         }
@@ -350,9 +436,9 @@ public class MapGenerator : MonoBehaviour
                 {
                     connectedRoom.SetAccessibleFromMainRoom();
                 }
-            }    
+            }
         }
-        
+
         public List<Coord> EdgeTiles
         {
             get { return edgeTiles; }

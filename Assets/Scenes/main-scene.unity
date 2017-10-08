@@ -278,6 +278,7 @@ MonoBehaviour:
   borderSize: 10
   wallThreshold: 10
   roomThreshold: 20
+  passagewayRadius: 1
 --- !u!4 &1466201896
 Transform:
   m_ObjectHideFlags: 0
