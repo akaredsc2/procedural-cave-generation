@@ -272,12 +272,12 @@ MonoBehaviour:
   height: 90
   seed: Vitalii
   useRandomSeed: 0
-  randomFillPercent: 47
+  randomFillPercent: 53
   smoothingIterationCount: 3
   squareSize: 1
   borderSize: 10
-  wallThreshold: 0
-  roomThreshold: 0
+  wallThreshold: 10
+  roomThreshold: 20
 --- !u!4 &1466201896
 Transform:
   m_ObjectHideFlags: 0
