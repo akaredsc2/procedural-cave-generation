@@ -2,13 +2,10 @@
 using DataStructures;
 using UnityEngine;
 
-namespace Factories
-{
-    public class MeshFactory
-    {
+namespace Factories {
+    public class MeshFactory {
         public Mesh CreateMesh(SquareGrid squareGrid, MeshFilter wallsMeshFilter, bool is2d, GameObject gameObject,
-            float squareSize)
-        {
+                               float squareSize) {
             // todo create class for holding this collections
             List<Vector3> vertices = new List<Vector3>();
             List<int> indecies = new List<int>();
@@ -16,12 +13,10 @@ namespace Factories
             List<List<int>> outlines = new List<List<int>>();
             HashSet<int> checkedVertices = new HashSet<int>();
 
-            for (int i = 0; i < squareGrid.Squares.GetLength(0); i++)
-            {
-                for (int j = 0; j < squareGrid.Squares.GetLength(1); j++)
-                {
+            for (int i = 0; i < squareGrid.Squares.GetLength(0); i++) {
+                for (int j = 0; j < squareGrid.Squares.GetLength(1); j++) {
                     TriangulateSquare(checkedVertices, triangleDictionary, vertices, indecies,
-                        squareGrid.Squares[i, j]);
+                                      squareGrid.Squares[i, j]);
                 }
             }
 
@@ -32,26 +27,22 @@ namespace Factories
 
             int tileAmount = 10;
             Vector2[] uv = new Vector2[vertices.Count];
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 float percentX = Mathf.InverseLerp(
-                    -squareGrid.Squares.GetLength(0) / 2 * squareSize,
-                    squareGrid.Squares.GetLength(0) / 2 * squareSize,
-                    vertices[i].x) * tileAmount;
+                                     -squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                                     squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                                     vertices[i].x) * tileAmount;
                 float percentY = Mathf.InverseLerp(
-                    -squareGrid.Squares.GetLength(0) / 2 * squareSize,
-                    squareGrid.Squares.GetLength(0) / 2 * squareSize,
-                    vertices[i].z) * tileAmount;
+                                     -squareGrid.Squares.GetLength(1) / 2 * squareSize,
+                                     squareGrid.Squares.GetLength(1) / 2 * squareSize,
+                                     vertices[i].z) * tileAmount;
                 uv[i] = new Vector2(percentX, percentY);
             }
             mesh.uv = uv;
 
-            if (is2d)
-            {
+            if (is2d) {
                 Generate2DColliders(outlines, checkedVertices, triangleDictionary, vertices, gameObject);
-            }
-            else
-            {
+            } else {
                 CreateWallMesh(outlines, checkedVertices, triangleDictionary, vertices, wallsMeshFilter);
             }
             return mesh;
@@ -59,9 +50,8 @@ namespace Factories
 
         // todo move to separate class
         private void CreateWallMesh(List<List<int>> outlines, HashSet<int> checkedVertices,
-            Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices,
-            MeshFilter wallsMeshFilter)
-        {
+                                    Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices,
+                                    MeshFilter wallsMeshFilter) {
             CalculateMeshOutlines(outlines, checkedVertices, triangleDictionary, vertices);
 
             List<Vector3> wallVertices = new List<Vector3>();
@@ -69,10 +59,8 @@ namespace Factories
             Mesh wallMesh = new Mesh();
             float wallHeight = 5;
 
-            foreach (List<int> outline in outlines)
-            {
-                for (int i = 0; i < outline.Count - 1; i++)
-                {
+            foreach (List<int> outline in outlines) {
+                for (int i = 0; i < outline.Count - 1; i++) {
                     int startIndex = wallVertices.Count;
                     wallVertices.Add(vertices[outline[i]]); // top left vertex
                     wallVertices.Add(vertices[outline[i + 1]]); // top right vertex
@@ -99,23 +87,19 @@ namespace Factories
 
         // todo fix outline generation
         void Generate2DColliders(List<List<int>> outlines, HashSet<int> checkedVertices,
-            Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices, GameObject gameObject)
-        {
+                                 Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices, GameObject gameObject) {
             EdgeCollider2D[] currentColliders = gameObject.GetComponents<EdgeCollider2D>();
-            for (int i = 0; i < currentColliders.Length; i++)
-            {
+            for (int i = 0; i < currentColliders.Length; i++) {
                 GameObject.Destroy(currentColliders[i]);
             }
 
             CalculateMeshOutlines(outlines, checkedVertices, triangleDictionary, vertices);
 
-            foreach (List<int> outline in outlines)
-            {
+            foreach (List<int> outline in outlines) {
                 EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
                 Vector2[] edgePoints = new Vector2[outline.Count];
 
-                for (int i = 0; i < outline.Count; i++)
-                {
+                for (int i = 0; i < outline.Count; i++) {
                     edgePoints[i] = new Vector2(vertices[outline[i]].x, vertices[outline[i]].z);
                 }
 
@@ -124,98 +108,96 @@ namespace Factories
         }
 
         private void TriangulateSquare(HashSet<int> checkedVertices, Dictionary<int, List<Triangle>> triangleDictionary,
-            List<Vector3> vertices,
-            List<int> indecies, Square square)
-        {
-            switch (square.Configuration)
-            {
+                                       List<Vector3> vertices,
+                                       List<int> indecies, Square square) {
+            switch (square.Configuration) {
                 case 0:
                     break;
 
                 // 1 active control node
                 case 1:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.CenterLeft, square.CenterBottom,
-                        square.BottomLeft);
+                                   square.BottomLeft);
                     break;
                 case 2:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.BottomRight, square.CenterBottom,
-                        square.CenterRight);
+                                   square.CenterRight);
                     break;
                 case 4:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopRight, square.CenterRight,
-                        square.CenterTop);
+                                   square.CenterTop);
                     break;
                 case 8:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.CenterTop,
-                        square.CenterLeft);
+                                   square.CenterLeft);
                     break;
 
                 // 2 active control nodes
                 case 3:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.CenterRight, square.BottomRight,
-                        square.BottomLeft,
-                        square.CenterLeft);
+                                   square.BottomLeft,
+                                   square.CenterLeft);
                     break;
                 case 6:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.CenterTop, square.TopRight,
-                        square.BottomRight,
-                        square.CenterBottom);
+                                   square.BottomRight,
+                                   square.CenterBottom);
                     break;
                 case 9:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.CenterTop,
-                        square.CenterBottom,
-                        square.BottomLeft);
+                                   square.CenterBottom,
+                                   square.BottomLeft);
                     break;
                 case 12:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.TopRight,
-                        square.CenterRight,
-                        square.CenterLeft);
+                                   square.CenterRight,
+                                   square.CenterLeft);
                     break;
                 case 5:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.CenterTop, square.TopRight,
-                        square.CenterRight,
-                        square.CenterBottom,
-                        square.BottomLeft, square.CenterLeft);
+                                   square.CenterRight,
+                                   square.CenterBottom,
+                                   square.BottomLeft, square.CenterLeft);
                     break;
                 case 10:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.CenterTop,
-                        square.CenterRight,
-                        square.BottomRight,
-                        square.CenterBottom, square.CenterLeft);
+                                   square.CenterRight,
+                                   square.BottomRight,
+                                   square.CenterBottom, square.CenterLeft);
                     break;
 
                 // 3 active control nodes
                 case 7:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.CenterTop, square.TopRight,
-                        square.BottomRight,
-                        square.BottomLeft,
-                        square.CenterLeft);
+                                   square.BottomRight,
+                                   square.BottomLeft,
+                                   square.CenterLeft);
                     break;
                 case 11:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.CenterTop,
-                        square.CenterRight,
-                        square.BottomRight,
-                        square.BottomLeft);
+                                   square.CenterRight,
+                                   square.BottomRight,
+                                   square.BottomLeft);
                     break;
                 case 13:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.TopRight,
-                        square.CenterRight,
-                        square.CenterBottom,
-                        square.BottomLeft);
+                                   square.CenterRight,
+                                   square.CenterBottom,
+                                   square.BottomLeft);
                     break;
                 case 14:
                     MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.TopRight,
-                        square.BottomRight,
-                        square.CenterBottom,
-                        square.CenterLeft);
+                                   square.BottomRight,
+                                   square.CenterBottom,
+                                   square.CenterLeft);
                     break;
 
                 // 4 active control nodes
                 case 15:
                     var meshPoints = MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft,
-                        square.TopRight,
-                        square.BottomRight,
-                        square.BottomLeft);
+                                                    square.TopRight,
+                                                    square.BottomRight,
+                                                    square.BottomLeft);
                     foreach (Node meshPoint in meshPoints)
                         checkedVertices.Add(meshPoint.VertexIndex);
                     break;
@@ -223,8 +205,7 @@ namespace Factories
         }
 
         private Node[] MeshFromPoints(Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices,
-            List<int> indecies, params Node[] points)
-        {
+                                      List<int> indecies, params Node[] points) {
             Node[] indexedPoints = AssignVertices(vertices, points);
 
             if (points.Length >= 3)
@@ -239,14 +220,11 @@ namespace Factories
             return indexedPoints;
         }
 
-        private Node[] AssignVertices(List<Vector3> vertices, Node[] points)
-        {
+        private Node[] AssignVertices(List<Vector3> vertices, Node[] points) {
             Node[] nodesWithVertexIndecies = new Node[points.Length];
-            for (int i = 0; i < points.Length; i++)
-            {
-                if (points[i].VertexIndex == -1)
-                {
-                    nodesWithVertexIndecies[i] = points[i].CopyWithVertexIndex(vertices.Count);
+            for (int i = 0; i < points.Length; i++) {
+                if (points[i].VertexIndex == -1) {
+                    nodesWithVertexIndecies[i] = points[i].CopyWithNewVertexIndex(vertices.Count);
                 }
                 vertices.Add(nodesWithVertexIndecies[i].Position);
             }
@@ -254,8 +232,7 @@ namespace Factories
         }
 
         private void CreateTriangle(Dictionary<int, List<Triangle>> triangleDictionary, List<int> indecies, Node a,
-            Node b, Node c)
-        {
+                                    Node b, Node c) {
             indecies.Add(a.VertexIndex);
             indecies.Add(b.VertexIndex);
             indecies.Add(c.VertexIndex);
@@ -267,10 +244,8 @@ namespace Factories
         }
 
         void AddTriangleToDictrionary(Dictionary<int, List<Triangle>> triangleDictionary, int vertexIndexKey,
-            Triangle triangle)
-        {
-            if (!triangleDictionary.ContainsKey(vertexIndexKey))
-            {
+                                      Triangle triangle) {
+            if (!triangleDictionary.ContainsKey(vertexIndexKey)) {
                 triangleDictionary.Add(vertexIndexKey, new List<Triangle>());
             }
             triangleDictionary[vertexIndexKey].Add(triangle);
@@ -278,23 +253,19 @@ namespace Factories
 
         // todo refactor
         void CalculateMeshOutlines(List<List<int>> outlines, HashSet<int> checkedVertices,
-            Dictionary<int, List<Triangle>> triangleDictionary,
-            List<Vector3> vertices)
-        {
-            for (int vertexIndex = 0; vertexIndex < vertices.Count; vertexIndex++)
-            {
-                if (!checkedVertices.Contains(vertexIndex))
-                {
+                                   Dictionary<int, List<Triangle>> triangleDictionary,
+                                   List<Vector3> vertices) {
+            for (int vertexIndex = 0; vertexIndex < vertices.Count; vertexIndex++) {
+                if (!checkedVertices.Contains(vertexIndex)) {
                     int newOutlineVertex = GetConnectedOutlineVertex(checkedVertices, triangleDictionary, vertexIndex);
-                    if (newOutlineVertex != -1)
-                    {
+                    if (newOutlineVertex != -1) {
                         checkedVertices.Add(vertexIndex);
 
                         List<int> newOutline = new List<int>();
                         newOutline.Add(vertexIndex);
                         outlines.Add(newOutline);
                         FollowOutline(outlines, checkedVertices, triangleDictionary, newOutlineVertex,
-                            outlines.Count - 1);
+                                      outlines.Count - 1);
                         outlines[outlines.Count - 1].Add(vertexIndex);
                     }
                 }
@@ -303,33 +274,26 @@ namespace Factories
 
         // todo replace recursion with loop
         void FollowOutline(List<List<int>> outlines, HashSet<int> checkedVertices,
-            Dictionary<int, List<Triangle>> triangleDictionary, int vertexIndex, int outlineIndex)
-        {
+                           Dictionary<int, List<Triangle>> triangleDictionary, int vertexIndex, int outlineIndex) {
             outlines[outlineIndex].Add(vertexIndex);
             checkedVertices.Add(vertexIndex);
             int nextVertexIndex = GetConnectedOutlineVertex(checkedVertices, triangleDictionary, vertexIndex);
 
-            if (nextVertexIndex != -1)
-            {
+            if (nextVertexIndex != -1) {
                 FollowOutline(outlines, checkedVertices, triangleDictionary, nextVertexIndex, outlineIndex);
             }
         }
 
         private int GetConnectedOutlineVertex(HashSet<int> checkedVertices,
-            Dictionary<int, List<Triangle>> triangleDictionary,
-            int vertexIndex)
-        {
+                                              Dictionary<int, List<Triangle>> triangleDictionary,
+                                              int vertexIndex) {
             List<Triangle> trianglesContainingVertex = triangleDictionary[vertexIndex];
 
-            foreach (Triangle triangle in trianglesContainingVertex)
-            {
-                for (int j = 0; j < 3; j++)
-                {
+            foreach (Triangle triangle in trianglesContainingVertex) {
+                for (int j = 0; j < 3; j++) {
                     int vertexB = triangle[j];
-                    if (vertexB != vertexIndex && !checkedVertices.Contains(vertexB))
-                    {
-                        if (IsOutlineEdge(triangleDictionary, vertexIndex, vertexB))
-                        {
+                    if (vertexB != vertexIndex && !checkedVertices.Contains(vertexB)) {
+                        if (IsOutlineEdge(triangleDictionary, vertexIndex, vertexB)) {
                             return vertexB;
                         }
                     }
@@ -339,15 +303,12 @@ namespace Factories
             return -1;
         }
 
-        private bool IsOutlineEdge(IDictionary<int, List<Triangle>> triangleDictionary, int vertexA, int vertexB)
-        {
+        private bool IsOutlineEdge(IDictionary<int, List<Triangle>> triangleDictionary, int vertexA, int vertexB) {
             List<Triangle> trianglesContainingVertexA = triangleDictionary[vertexA];
             int sharedTrianglesCount = 0;
 
-            for (int i = 0; i < trianglesContainingVertexA.Count; i++)
-            {
-                if (trianglesContainingVertexA[i].Contains(vertexB))
-                {
+            for (int i = 0; i < trianglesContainingVertexA.Count; i++) {
+                if (trianglesContainingVertexA[i].Contains(vertexB)) {
                     sharedTrianglesCount += 1;
                 }
             }
@@ -355,15 +316,13 @@ namespace Factories
             return sharedTrianglesCount == 1;
         }
 
-        private struct Triangle
-        {
+        private struct Triangle {
             public readonly int vertexIndexA;
             public readonly int vertexIndexB;
             public readonly int vertexIndexC;
             private readonly int[] vertices;
 
-            public Triangle(int vertexIndexA, int vertexIndexB, int vertexIndexC)
-            {
+            public Triangle(int vertexIndexA, int vertexIndexB, int vertexIndexC) {
                 this.vertexIndexA = vertexIndexA;
                 this.vertexIndexB = vertexIndexB;
                 this.vertexIndexC = vertexIndexC;
@@ -374,13 +333,11 @@ namespace Factories
                 vertices[2] = vertexIndexC;
             }
 
-            public int this[int i]
-            {
+            public int this[int i] {
                 get { return vertices[i]; }
             }
 
-            public bool Contains(int vertexIndex)
-            {
+            public bool Contains(int vertexIndex) {
                 return vertexIndex == vertexIndexA || vertexIndex == vertexIndexB || vertexIndex == vertexIndexC;
             }
         }

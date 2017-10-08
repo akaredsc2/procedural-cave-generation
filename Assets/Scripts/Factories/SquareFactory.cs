@@ -1,12 +1,9 @@
 ﻿using DataStructures;
 
-namespace Factories
-{
-    public class SquareFactory
-    {
+namespace Factories {
+    public class SquareFactory {
         public Square CreateSquare(ControlNode topLeft, ControlNode topRight, ControlNode bottomRight,
-            ControlNode bottomLeft)
-        {
+                                   ControlNode bottomLeft) {
             Node centerTop = topLeft.Right;
             Node centerRight = bottomRight.Above;
             Node centerBottom = bottomLeft.Right;
@@ -24,7 +21,7 @@ namespace Factories
                 configuration += 1;
 
             return new Square(topLeft, topRight, bottomRight, bottomLeft,
-                centerTop, centerRight, centerBottom, centerLeft, configuration);
+                              centerTop, centerRight, centerBottom, centerLeft, configuration);
         }
     }
 }

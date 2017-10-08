@@ -1,7 +1,5 @@
-﻿namespace DataStructures
-{
-    public class Square
-    {
+﻿namespace DataStructures {
+    public class Square {
         private readonly ControlNode topLeft;
         private readonly ControlNode topRight;
         private readonly ControlNode bottomRight;
@@ -15,8 +13,7 @@
         private readonly int configuration;
 
         public Square(ControlNode topLeft, ControlNode topRight, ControlNode bottomRight, ControlNode bottomLeft,
-            Node centerTop, Node centerRight, Node centerBottom, Node centerLeft, int configuration)
-        {
+                      Node centerTop, Node centerRight, Node centerBottom, Node centerLeft, int configuration) {
             this.topLeft = topLeft;
             this.topRight = topRight;
             this.bottomRight = bottomRight;
@@ -27,49 +24,40 @@
             this.centerLeft = centerLeft;
             this.configuration = configuration;
         }
-        
-        public ControlNode TopLeft
-        {
+
+        public ControlNode TopLeft {
             get { return topLeft; }
         }
 
-        public ControlNode TopRight
-        {
+        public ControlNode TopRight {
             get { return topRight; }
         }
 
-        public ControlNode BottomRight
-        {
+        public ControlNode BottomRight {
             get { return bottomRight; }
         }
 
-        public ControlNode BottomLeft
-        {
+        public ControlNode BottomLeft {
             get { return bottomLeft; }
         }
 
-        public Node CenterTop
-        {
+        public Node CenterTop {
             get { return centerTop; }
         }
 
-        public Node CenterRight
-        {
+        public Node CenterRight {
             get { return centerRight; }
         }
 
-        public Node CenterBottom
-        {
+        public Node CenterBottom {
             get { return centerBottom; }
         }
 
-        public Node CenterLeft
-        {
+        public Node CenterLeft {
             get { return centerLeft; }
         }
 
-        public int Configuration
-        {
+        public int Configuration {
             get { return configuration; }
         }
     }

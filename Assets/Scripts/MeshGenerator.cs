@@ -2,8 +2,7 @@
 using Factories;
 using UnityEngine;
 
-public class MeshGenerator : MonoBehaviour
-{
+public class MeshGenerator : MonoBehaviour {
     public ProceduralCaveGenerationAbstractFactory proceduralCaveGenerationAbstractFactory;
 
     public MeshFilter wallsMeshFilter;
@@ -14,14 +13,12 @@ public class MeshGenerator : MonoBehaviour
 
     public bool is2D;
 
-    private void Start()
-    {
+    private void Start() {
         squareGridFactory = proceduralCaveGenerationAbstractFactory.SquareGridFactory;
         meshFactory = proceduralCaveGenerationAbstractFactory.MeshFactory;
     }
 
-    public void GenerateMesh(int[,] map, float squareSize)
-    {
+    public void GenerateMesh(int[,] map, float squareSize) {
         SquareGrid squareGrid = squareGridFactory.CreateSqaureGrid(map, squareSize);
         cave.mesh = meshFactory.CreateMesh(squareGrid, wallsMeshFilter, is2D, gameObject, squareSize);
     }

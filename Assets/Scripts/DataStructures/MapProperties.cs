@@ -1,7 +1,5 @@
-﻿namespace DataStructures
-{
-    public class MapProperties
-    {
+﻿namespace DataStructures {
+    public class MapProperties {
         private readonly int width;
         private readonly int height;
         private readonly string seed;
@@ -10,9 +8,8 @@
         private readonly int smoothingIterationCount;
         private readonly float squareSize;
 
-        public MapProperties(int width, int height, string seed, bool useRandomSeed,
-            int randomFillPercent, int smoothingIterationCount, float squareSize)
-        {
+        public MapProperties(int width, int height, string seed, bool useRandomSeed, int randomFillPercent,
+                             int smoothingIterationCount, float squareSize) {
             this.width = width;
             this.height = height;
             this.seed = seed;
@@ -22,38 +19,31 @@
             this.squareSize = squareSize;
         }
 
-        public int Width
-        {
+        public int Width {
             get { return width; }
         }
 
-        public int Height
-        {
+        public int Height {
             get { return height; }
         }
 
-        public string Seed
-        {
+        public string Seed {
             get { return seed; }
         }
 
-        public bool UseRandomSeed
-        {
+        public bool UseRandomSeed {
             get { return useRandomSeed; }
         }
 
-        public int RandomFillPercent
-        {
+        public int RandomFillPercent {
             get { return randomFillPercent; }
         }
 
-        public int SmoothingIterationCount
-        {
+        public int SmoothingIterationCount {
             get { return smoothingIterationCount; }
         }
 
-        public float SquareSize
-        {
+        public float SquareSize {
             get { return squareSize; }
         }
     }

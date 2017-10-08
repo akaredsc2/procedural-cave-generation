@@ -1,26 +1,21 @@
 ﻿using DataStructures;
 using UnityEngine;
 
-namespace Factories
-{
-    public class SquareGridFactory
-    {
+namespace Factories {
+    public class SquareGridFactory {
         private readonly SquareFactory squareFactory;
 
-        public SquareGridFactory(SquareFactory squareFactory)
-        {
+        public SquareGridFactory(SquareFactory squareFactory) {
             this.squareFactory = squareFactory;
         }
 
-        public SquareGrid CreateSqaureGrid(int[,] map, float squareSize)
-        {
+        public SquareGrid CreateSqaureGrid(int[,] map, float squareSize) {
             ControlNode[,] controlNodes = CreateControlNodes(map, squareSize);
             Square[,] squares = CreateSquares(controlNodes);
             return new SquareGrid(squares);
         }
 
-        private ControlNode[,] CreateControlNodes(int[,] map, float squareSize)
-        {
+        private ControlNode[,] CreateControlNodes(int[,] map, float squareSize) {
             int horizontalNodeCount = map.GetLength(0);
             int verticalNodeCount = map.GetLength(1);
             float mapWidth = horizontalNodeCount * squareSize;
@@ -28,10 +23,8 @@ namespace Factories
 
             ControlNode[,] result = new ControlNode[horizontalNodeCount, verticalNodeCount];
 
-            for (int i = 0; i < result.GetLength(0); i++)
-            {
-                for (int j = 0; j < result.GetLength(1); j++)
-                {
+            for (int i = 0; i < result.GetLength(0); i++) {
+                for (int j = 0; j < result.GetLength(1); j++) {
                     Vector3 position = new Vector3(
                         -mapWidth / 2 + i * squareSize + squareSize / 2,
                         0,
@@ -44,16 +37,13 @@ namespace Factories
             return result;
         }
 
-        private Square[,] CreateSquares(ControlNode[,] controlNodes)
-        {
+        private Square[,] CreateSquares(ControlNode[,] controlNodes) {
             Square[,] result = new Square[controlNodes.GetLength(0) - 1, controlNodes.GetLength(1) - 1];
 
-            for (int i = 0; i < result.GetLength(0); i++)
-            {
-                for (int j = 0; j < result.GetLength(1); j++)
-                {
+            for (int i = 0; i < result.GetLength(0); i++) {
+                for (int j = 0; j < result.GetLength(1); j++) {
                     result[i, j] = squareFactory.CreateSquare(controlNodes[i, j + 1], controlNodes[i + 1, j + 1],
-                        controlNodes[i + 1, j], controlNodes[i, j]);
+                                                              controlNodes[i + 1, j], controlNodes[i, j]);
                 }
             }
 
