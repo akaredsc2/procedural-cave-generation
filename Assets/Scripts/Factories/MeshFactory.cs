@@ -6,7 +6,8 @@ namespace Factories
 {
     public class MeshFactory
     {
-        public Mesh CreateMesh(SquareGrid squareGrid, MeshFilter wallsMeshFilter)
+        public Mesh CreateMesh(SquareGrid squareGrid, MeshFilter wallsMeshFilter, bool is2d, GameObject gameObject,
+            float squareSize)
         {
             // todo create class for holding this collections
             List<Vector3> vertices = new List<Vector3>();
@@ -29,8 +30,30 @@ namespace Factories
             mesh.triangles = indecies.ToArray();
             mesh.RecalculateNormals();
 
-            CreateWallMesh(outlines, checkedVertices, triangleDictionary, vertices, wallsMeshFilter);
+            int tileAmount = 10;
+            Vector2[] uv = new Vector2[vertices.Count];
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                float percentX = Mathf.InverseLerp(
+                    -squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                    squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                    vertices[i].x) * tileAmount;
+                float percentY = Mathf.InverseLerp(
+                    -squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                    squareGrid.Squares.GetLength(0) / 2 * squareSize,
+                    vertices[i].z) * tileAmount;
+                uv[i] = new Vector2(percentX, percentY);
+            }
+            mesh.uv = uv;
 
+            if (is2d)
+            {
+                Generate2DColliders(outlines, checkedVertices, triangleDictionary, vertices, gameObject);
+            }
+            else
+            {
+                CreateWallMesh(outlines, checkedVertices, triangleDictionary, vertices, wallsMeshFilter);
+            }
             return mesh;
         }
 
@@ -69,6 +92,35 @@ namespace Factories
             wallMesh.vertices = wallVertices.ToArray();
             wallMesh.triangles = wallTriangles.ToArray();
             wallsMeshFilter.mesh = wallMesh;
+
+            MeshCollider wallCollider = wallsMeshFilter.gameObject.AddComponent<MeshCollider>();
+            wallCollider.sharedMesh = wallMesh;
+        }
+
+        // todo fix outline generation
+        void Generate2DColliders(List<List<int>> outlines, HashSet<int> checkedVertices,
+            Dictionary<int, List<Triangle>> triangleDictionary, List<Vector3> vertices, GameObject gameObject)
+        {
+            EdgeCollider2D[] currentColliders = gameObject.GetComponents<EdgeCollider2D>();
+            for (int i = 0; i < currentColliders.Length; i++)
+            {
+                GameObject.Destroy(currentColliders[i]);
+            }
+
+            CalculateMeshOutlines(outlines, checkedVertices, triangleDictionary, vertices);
+
+            foreach (List<int> outline in outlines)
+            {
+                EdgeCollider2D edgeCollider = gameObject.AddComponent<EdgeCollider2D>();
+                Vector2[] edgePoints = new Vector2[outline.Count];
+
+                for (int i = 0; i < outline.Count; i++)
+                {
+                    edgePoints[i] = new Vector2(vertices[outline[i]].x, vertices[outline[i]].z);
+                }
+
+                edgeCollider.points = edgePoints;
+            }
         }
 
         private void TriangulateSquare(HashSet<int> checkedVertices, Dictionary<int, List<Triangle>> triangleDictionary,
@@ -160,7 +212,8 @@ namespace Factories
 
                 // 4 active control nodes
                 case 15:
-                    var meshPoints = MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft, square.TopRight,
+                    var meshPoints = MeshFromPoints(triangleDictionary, vertices, indecies, square.TopLeft,
+                        square.TopRight,
                         square.BottomRight,
                         square.BottomLeft);
                     foreach (Node meshPoint in meshPoints)
@@ -218,7 +271,7 @@ namespace Factories
         {
             if (!triangleDictionary.ContainsKey(vertexIndexKey))
             {
-                triangleDictionary.Add(vertexIndexKey, new List<Triangle>());                                
+                triangleDictionary.Add(vertexIndexKey, new List<Triangle>());
             }
             triangleDictionary[vertexIndexKey].Add(triangle);
         }
@@ -262,7 +315,8 @@ namespace Factories
             }
         }
 
-        private int GetConnectedOutlineVertex(HashSet<int> checkedVertices, Dictionary<int, List<Triangle>> triangleDictionary,
+        private int GetConnectedOutlineVertex(HashSet<int> checkedVertices,
+            Dictionary<int, List<Triangle>> triangleDictionary,
             int vertexIndex)
         {
             List<Triangle> trianglesContainingVertex = triangleDictionary[vertexIndex];
@@ -297,7 +351,7 @@ namespace Factories
                     sharedTrianglesCount += 1;
                 }
             }
-            
+
             return sharedTrianglesCount == 1;
         }
 

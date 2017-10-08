@@ -7,9 +7,12 @@ public class MeshGenerator : MonoBehaviour
     public ProceduralCaveGenerationAbstractFactory proceduralCaveGenerationAbstractFactory;
 
     public MeshFilter wallsMeshFilter;
+    public MeshFilter cave;
 
     private SquareGridFactory squareGridFactory;
     private MeshFactory meshFactory;
+
+    public bool is2D;
 
     private void Start()
     {
@@ -20,6 +23,6 @@ public class MeshGenerator : MonoBehaviour
     public void GenerateMesh(int[,] map, float squareSize)
     {
         SquareGrid squareGrid = squareGridFactory.CreateSqaureGrid(map, squareSize);
-        GetComponent<MeshFilter>().mesh = meshFactory.CreateMesh(squareGrid, wallsMeshFilter);
+        cave.mesh = meshFactory.CreateMesh(squareGrid, wallsMeshFilter, is2D, gameObject, squareSize);
     }
 }

@@ -66,7 +66,7 @@ public class MapGenerator : MonoBehaviour
             }
 
             MeshGenerator meshGenerator = GetComponent<MeshGenerator>();
-            meshGenerator.GenerateMesh(borderedMap, 1);
+            meshGenerator.GenerateMesh(borderedMap, squareSize);
         }
     }
 
@@ -204,7 +204,6 @@ public class MapGenerator : MonoBehaviour
     void CreatePassage(Room roomA, Room roomB, Coord tileA, Coord tileB)
     {
         Room.ConnectRooms(roomA, roomB);
-        Debug.DrawLine(CoordToWorldPoint(tileA), CoordToWorldPoint(tileB), Color.green, 100);
 
         List<Coord> line = GetLine(tileA, tileB);
         foreach (Coord coord in line)
@@ -289,11 +288,6 @@ public class MapGenerator : MonoBehaviour
         }
 
         return line;
-    }
-
-    Vector3 CoordToWorldPoint(Coord tile)
-    {
-        return new Vector3(-width / 2 + 0.5f + tile.TileX, 2, -height / 2 + 0.5f + tile.TileY);
     }
 
     private List<List<Coord>> GetRegions(int tileType, int[,] map)
