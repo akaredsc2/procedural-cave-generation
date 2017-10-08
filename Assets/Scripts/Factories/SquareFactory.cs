@@ -20,8 +20,9 @@ namespace Factories {
             if (bottomLeft.IsActive)
                 configuration += 1;
 
-            return new Square(topLeft, topRight, bottomRight, bottomLeft,
-                              centerTop, centerRight, centerBottom, centerLeft, configuration);
+            return new Square(topLeft, topRight, bottomRight, bottomLeft, 
+                              centerTop, centerRight, centerBottom, centerLeft,
+                              configuration);
         }
     }
 }

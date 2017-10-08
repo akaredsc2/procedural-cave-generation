@@ -3,6 +3,7 @@ using System.Diagnostics;
 using DataStructures;
 
 namespace Factories {
+    // todo consider using decorators for smoothing, adding walls etc
     public class MapFactory {
         public int[,] CreateMap(MapProperties mapProperties) {
             int[,] filledMap = RandomFillMap(mapProperties);
